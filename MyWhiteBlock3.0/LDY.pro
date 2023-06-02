@@ -27,6 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     login.cpp \
+    rank_board.cpp \
     start.cpp \
     regist.cpp \
     end.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 
 HEADERS += \
     login.h \
+    rank_board.h \
     start.h \
     regist.h \
     end.h \
@@ -47,6 +49,7 @@ HEADERS += \
 
 FORMS += \
     login.ui \
+    rank_board.ui \
     start.ui \
     regist.ui \
     end.ui \

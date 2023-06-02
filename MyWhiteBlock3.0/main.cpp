@@ -5,6 +5,7 @@
 #include "end.h"
 #include "game_widget.h"
 #include "gamehall.h"
+#include "rank_board.h"
 #include "settings.h"
 
 int main(int argc, char *argv[])
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     End *E = new End();
     Gamehall *G = new Gamehall();
     Settings *St = new Settings();
+    rank_board *rkbd = new rank_board();
     game_widget *w = new game_widget();
 
     QObject::connect(S, &Start::login, L, &Login::_init);  //点击登录
@@ -34,6 +36,7 @@ int main(int argc, char *argv[])
     QObject::connect(S, &Start::userbest, E, &End::updbest);
     QObject::connect(G, &Gamehall::logout, S, &Start::show);//点击结束
     QObject::connect(G, &Gamehall::gotoSetting, St, &Settings::init);//进入设置
+    QObject::connect(G, &Gamehall::gotoRank, rkbd, &rank_board::init);
     QObject::connect(G, &Gamehall::gotoStart, w, &game_widget::refresh);
     QObject::connect(G, &Gamehall::gotoStart, w, &game_widget::show);
     QObject::connect(w, &game_widget::gameover, E, &End::_init);

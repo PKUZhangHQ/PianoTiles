@@ -19,6 +19,9 @@ Gamehall::Gamehall(QWidget *parent) :
 
     //点击开始游戏
     connect(ui->start_btn, &QPushButton::clicked, this, &Gamehall::goStart);
+
+    //点击排行榜
+    connect(ui->rank_btn, &QPushButton::clicked, this, &Gamehall::goRank);
 }
 
 Gamehall::~Gamehall(){delete ui;}
@@ -45,6 +48,11 @@ void Gamehall::logoutbut()
 void Gamehall::goSetting()
 {
     emit Gamehall::gotoSetting();
+}
+
+void Gamehall::goRank()
+{
+    emit Gamehall::gotoRank();
 }
 
 void Gamehall::goStart()

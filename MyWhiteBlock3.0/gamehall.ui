@@ -29,7 +29,7 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>30</y>
+     <y>10</y>
      <width>371</width>
      <height>111</height>
     </rect>
@@ -49,8 +49,8 @@
   <widget class="QPushButton" name="setting_btn">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>320</y>
+     <x>240</x>
+     <y>230</y>
      <width>201</width>
      <height>61</height>
     </rect>
@@ -67,8 +67,8 @@
   <widget class="QPushButton" name="start_btn">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>420</y>
+     <x>240</x>
+     <y>416</y>
      <width>201</width>
      <height>61</height>
     </rect>
@@ -85,8 +85,8 @@
   <widget class="QPushButton" name="exit_btn">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>520</y>
+     <x>240</x>
+     <y>510</y>
      <width>201</width>
      <height>61</height>
     </rect>
@@ -104,7 +104,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>160</y>
+     <y>110</y>
      <width>411</width>
      <height>111</height>
     </rect>
@@ -120,6 +120,24 @@
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="rank_btn">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>320</y>
+     <width>201</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>排行榜</string>
    </property>
   </widget>
  </widget>

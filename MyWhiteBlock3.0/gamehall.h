@@ -15,6 +15,7 @@ public:
     explicit Gamehall(QWidget *parent = 0);
     ~Gamehall();
     void goSetting();//点击设置的反应
+    void goRank();//查看排行榜
     void goStart();//点击开始游戏的反应
     void logoutbut();
 
@@ -24,6 +25,7 @@ private:
 signals:
     void gotoSetting();//设置信号
     void gotoStart();//开始游戏信号
+    void gotoRank();//排行榜信号
     void logout();
 
 public slots:
