@@ -15,7 +15,7 @@ public:
     explicit Start(QWidget *parent = 0);
     ~Start();
     int user_num;
-    QString cur;
+    QString cur; // user_name,user_key
     void init();
 
 signals:

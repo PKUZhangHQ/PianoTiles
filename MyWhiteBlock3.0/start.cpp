@@ -1,5 +1,6 @@
 #include "start.h"
 #include "ui_start.h"
+#include "user_info.h"
 #include <QFile>
 #include <QDataStream>
 #include <QDebug>
@@ -9,6 +10,9 @@
 #include <QPushButton>
 #include <QDesktopWidget>
 #include <QIcon>
+#include <QVector>
+
+QMap<QString,UserInfo> usersInfo_map; // 所有用户信息
 
 QMap<QString,QString> mp;
 QMap<QString,int> id_mp;
@@ -19,42 +23,59 @@ Start::Start(QWidget *parent):
     QWidget(parent),
     ui(new Ui::Start)
 {
+    qDebug() << "Hello";
     ui->setupUi(this);
     this->resize(600,800);
     setWindowIcon(QIcon(":/new/prefix3/whiteblock.webp"));
     this->user_num = 0;
     this->move((QApplication::desktop()->width()-this->width())/2,(QApplication::desktop()->height()-this->height())/2);
+
+    this->ui->login->setShortcut(Qt::Key_Return);
     QObject::connect(this->ui->login, &QPushButton::clicked,this,&Start::loginbut);
+    this->ui->exit->setShortcut(Qt::Key_Escape);
     QObject::connect(this->ui->exit, &QPushButton::clicked,this,&Start::quitbut);
+    this->ui->register_2->setShortcut(Qt::Key_Space);
     QObject::connect(this->ui->register_2, &QPushButton::clicked,this,&Start::registbut);
+
+    this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-Start::~Start(){delete ui;}
+Start::~Start(){
+    // 这里存信息
+    qDebug() << "Save all User Info! End Program";
+    delete ui;
+}
 
 void Start::init()
 {
+//    vector<UserInfo> users_info;
+//    users_info = read_user_info("user_data");
+//    this->user_num = users_info.size();
     QFile file("user_data");
-    if(file.open(QFile::ReadOnly))
-    {
-        QDataStream in(&file);
-        this->user_num = 0;
-        char *str;
-        int score;
-        while(!in.atEnd())
-        {
-            in>>str;
-            QString user(str);
-            in>>str;
-            QString pswd(str);
-            this->user_num++;
-            userlist[this->user_num] = user;
-            in>>score,best[this->user_num][0] = score;
-            in>>score,best[this->user_num][1] = score;
-            in>>score,best[this->user_num][2] = score;
-            mp[user] = pswd,id_mp[user] = this->user_num;
-        }
-        file.close();
-    }
+    // 这里读信息 拿到UsersInfo_map
+//    if(file.open(QFile::ReadOnly))
+//    {
+//        QDataStream in(&file);
+//        this->user_num = 0;
+//        char *str;
+//        int score;
+//        while(!in.atEnd())
+//        {
+//            in>>str;
+//            QString user(str);
+//            in>>str;
+//            QString pswd(str);
+//            this->user_num++;
+//            userlist[this->user_num] = user;
+//            in>>score,best[this->user_num][0] = score;
+//            in>>score,best[this->user_num][1] = score;
+//            in>>score,best[this->user_num][2] = score;
+//            mp[user] = pswd,id_mp[user] = this->user_num;
+//        }
+//        file.close();
+//    }
+
+    this->user_num = usersInfo_map.size(); // 这个貌似没用
     this->show();
 }
 
@@ -76,56 +97,83 @@ void Start::quitbut()
 }
 void Start::updhis(int diff, int score)
 {
-    int id = id_mp[this->cur];
-    if(score>best[id][diff])
-    {
-        best[id][diff] = score;
-        QFile file("user_data");
-        if(file.open(QFile::WriteOnly|QFile::Truncate))
-        {
-            QDataStream out(&file);
-            for(int i = 1;i<=this->user_num;i++)
-            {
-                QString usr = userlist[i];
-                int Id = id_mp[usr];
-                out<<usr.toUtf8()<<mp[usr].toUtf8()<<best[Id][0]<<best[Id][1]<<best[Id][2];
-            }
-        }
-    }emit userbest(diff,best[id][diff]);
+    if(usersInfo_map[this->cur].score_num[diff]<MAX_HIST_LEN){
+        usersInfo_map[this->cur].score_num[diff]++;
+    }
+    int score_num = usersInfo_map[this->cur].score_num[diff];
+    usersInfo_map[this->cur].scores[diff][score_num-1] = score;
+    qSort(usersInfo_map[this->cur].scores,usersInfo_map[this->curr]+score_num);
+
+    emit userbest(diff,usersInfo_map[this->cur].scores[diff][score_num-1]); // 这个要改
+
+//    int id = id_mp[this->cur];
+//    if(score>best[id][diff])
+//    {
+//        best[id][diff] = score;
+//        QFile file("user_data");
+//        if(file.open(QFile::WriteOnly|QFile::Truncate))
+//        {
+//            QDataStream out(&file);
+//            for(int i = 1;i<=this->user_num;i++)
+//            {
+//                QString usr = userlist[i];
+//                int Id = id_mp[usr];
+//                out<<usr.toUtf8()<<mp[usr].toUtf8()<<best[Id][0]<<best[Id][1]<<best[Id][2];
+//            }
+//        }
+//    }
+//    emit userbest(diff,best[id][diff]);
 }
 
 void Start::updusr(QString user, QString pswd)
 {
-    if(mp.find(user)!=mp.end())
+    if(usersInfo_map.find(user)!=usersInfo_map.end())
         emit(register_fail());
-    else
-    {
+    else{
         emit(register_success());
         this->user_num++;
-        mp[user] = pswd,id_mp[user] = this->user_num;
-        userlist[this->user_num] = user;
-        QFile file("user_data");
-        int score = 0;
-        if(file.open(QFile::Append))
-        {
-            QDataStream out(&file);
-            out<<user.toUtf8()<<pswd.toUtf8()<<score<<score<<score;
-            file.close();
-        }
+        UserInfo newUser(user,pswd);
+        usersInfo_map[user] = newUser;
     }
+//    if(mp.find(user)!=mp.end())
+//        emit(register_fail());
+//    else
+//    {
+//        emit(register_success());
+//        this->user_num++;
+//        mp[user] = pswd,id_mp[user] = this->user_num;
+//        userlist[this->user_num] = user;
+//        QFile file("user_data");
+//        int score = 0;
+//        if(file.open(QFile::Append))
+//        {
+//            QDataStream out(&file);
+//            out<<user.toUtf8()<<pswd.toUtf8()<<score<<score<<score;
+//            file.close();
+//        }
+//    }
 }
 
 void Start::check(QString user, QString pswd)
 {
-    if(mp.find(user)!=mp.end())
-    {
-        if(mp[user]!=pswd)
-            emit(login_fail(0));
-        else
-        {
+    if(usersInfo_map.find(user)!=usersInfo_map.end()){
+        if(usersInfo_map[user]!=pswd)
+            emit(login_fail(0)); // 密码错误
+        else{
             emit(login_success(user));
             this->cur = user,this->close();
         }
     }
-    else emit(login_fail(1));
+    else emit(login_fail(1)); // 用户名重复
+//    if(mp.find(user)!=mp.end())
+//    {
+//        if(mp[user]!=pswd)
+//            emit(login_fail(0));
+//        else
+//        {
+//            emit(login_success(user));
+//            this->cur = user,this->close();
+//        }
+//    }
+//    else emit(login_fail(1));
 }

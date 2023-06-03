@@ -40,7 +40,7 @@
     </font>
    </property>
    <property name="text">
-    <string>登录</string>
+    <string>登录（Enter）</string>
    </property>
   </widget>
   <widget class="QPushButton" name="exit">
@@ -58,7 +58,7 @@
     </font>
    </property>
    <property name="text">
-    <string>退出游戏</string>
+    <string>退出游戏（Esc）</string>
    </property>
   </widget>
   <widget class="QPushButton" name="register_2">
@@ -76,7 +76,7 @@
     </font>
    </property>
    <property name="text">
-    <string>注册</string>
+    <string>注册（Space）</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -92,7 +92,6 @@
     <font>
      <family>宋体</family>
      <pointsize>24</pointsize>
-     <weight>75</weight>
      <italic>false</italic>
      <bold>true</bold>
      <stylestrategy>PreferAntialias</stylestrategy>

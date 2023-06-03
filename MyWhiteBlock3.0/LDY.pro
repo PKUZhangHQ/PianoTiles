@@ -45,7 +45,8 @@ HEADERS += \
     game_widget.h \
     blockdata.h \
     gamehall.h \
-    settings.h
+    settings.h \
+    user_info.h
 
 FORMS += \
     login.ui \

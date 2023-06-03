@@ -41,5 +41,5 @@ void End::updbest(int diff, int score)
     if(diff==0)Diff = "简单";
     else if(diff==1)Diff = "普通";
     else Diff = "困难";
-    this->ui->his->setText("历史最高分("+Diff+"模式）："+QString::number(score));
+    this->ui->his->setText("个人历史最高分("+Diff+"模式）："+QString::number(score));
 }
