@@ -14,6 +14,7 @@ Login::Login(QWidget *parent) :
     this->setAttribute(Qt::WA_ShowModal,true);
     setWindowIcon(QIcon(":/new/prefix3/whiteblock.webp"));
 
+    this->ui->login->setShortcut(Qt::Key_Return);
     QObject::connect(this->ui->login, &QPushButton::clicked, this, &Login::loginbut);
     QObject::connect(this->ui->cancel, &QPushButton::clicked, this, &Login::close);
 }

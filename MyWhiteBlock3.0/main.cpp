@@ -8,6 +8,11 @@
 #include "rank_board.h"
 #include "settings.h"
 
+int func(QApplication &a,Start *s){
+    int res = a.exec();
+    delete s;
+    return res;
+}
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -23,9 +28,9 @@ int main(int argc, char *argv[])
     rank_board *rkbd = new rank_board();
     game_widget *w = new game_widget();
 
-    QObject::connect(S, &Start::login, L, &Login::_init);  //点击登录
-    QObject::connect(S, &Start::regist, R, &Regist::_init);  //点击注册
-    QObject::connect(L, &Login::login, S, &Start::check);
+    QObject::connect(S, &Start::login, L, &Login::_init);  // 主界面点击登录
+    QObject::connect(S, &Start::regist, R, &Regist::_init);  // 主界面点击注册
+    QObject::connect(L, &Login::login, S, &Start::check); // 登陆界面登录
     QObject::connect(R, &Regist::regist, S, &Start::updusr);
     QObject::connect(S, &Start::login_success, L, &Login::success);
     QObject::connect(S, &Start::login_success, G, &Gamehall::init);//进入游戏大厅
