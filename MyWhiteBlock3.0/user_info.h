@@ -49,8 +49,8 @@ struct UserInfo {
 
 #pragma pack(pop)
 
-QMap<UserInfo> read_user_info (const char* path__) {
-    QMap<UserInfo> ret;
+QMap<QString, UserInfo> read_user_info (const char* path__) {
+    QMap<QString, UserInfo> ret;
     std::ifstream fin;
     fin.open(path__, std::ios::in | std::ios::binary);
     if (fin) {
@@ -64,7 +64,7 @@ QMap<UserInfo> read_user_info (const char* path__) {
     return ret;
 }
 
-void dump_user_info (QMap& map_user__, const char* path__) {
+void dump_user_info (QMap<QString, UserInfo>& map_user__, const char* path__) {
     std::ofstream fout;
     fout.open(path__, std::ios::out | std::ios::binary);
     if (fout) {
