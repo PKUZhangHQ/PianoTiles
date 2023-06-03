@@ -41,17 +41,14 @@ Start::Start(QWidget *parent):
 }
 
 Start::~Start(){
-    // 这里存信息
+    dump_user_info(usersInfo_map, "user_data");
     qDebug() << "Save all User Info! End Program";
     delete ui;
 }
 
 void Start::init()
 {
-//    vector<UserInfo> users_info;
-//    users_info = read_user_info("user_data");
-//    this->user_num = users_info.size();
-    QFile file("user_data");
+    usersInfo_map = read_user_info("user_data");
     // 这里读信息 拿到UsersInfo_map
 //    if(file.open(QFile::ReadOnly))
 //    {
@@ -97,14 +94,17 @@ void Start::quitbut()
 }
 void Start::updhis(int diff, int score)
 {
-    if(usersInfo_map[this->cur].score_num[diff]<MAX_HIST_LEN){
-        usersInfo_map[this->cur].score_num[diff]++;
-    }
-    int score_num = usersInfo_map[this->cur].score_num[diff];
-    usersInfo_map[this->cur].scores[diff][score_num-1] = score;
-    qSort(usersInfo_map[this->cur].scores,usersInfo_map[this->curr]+score_num);
+    //这里要改了，运行时scores已经改成vector了
+//    if(usersInfo_map[this->cur].score_num[diff]<MAX_HIST_LEN){
+//        usersInfo_map[this->cur].score_num[diff]++;
+//    }
+//    int score_num = usersInfo_map[this->cur].score_num[diff];
+    QVector<int32_t>& curr_score_record = usersInfo_map[this->cur].scores[diff];
+    curr_score_record.push_back(score);
+    qSort(curr_score_record.begin(), curr_score_record.end());
+    if (curr_score_record.size() > MAX_HIST_LEN) {curr_score_record.erase(curr_score_record.begin());}
 
-    emit userbest(diff,usersInfo_map[this->cur].scores[diff][score_num-1]); // 这个要改
+    emit userbest(diff, curr_score_record.back()); // 这个要改
 
 //    int id = id_mp[this->cur];
 //    if(score>best[id][diff])
@@ -157,7 +157,7 @@ void Start::updusr(QString user, QString pswd)
 void Start::check(QString user, QString pswd)
 {
     if(usersInfo_map.find(user)!=usersInfo_map.end()){
-        if(usersInfo_map[user]!=pswd)
+        if(usersInfo_map[user].pswd!=pswd)
             emit(login_fail(0)); // 密码错误
         else{
             emit(login_success(user));

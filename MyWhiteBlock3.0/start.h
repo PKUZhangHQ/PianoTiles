@@ -2,6 +2,8 @@
 #define START_H
 
 #include <QWidget>
+#include <QMap>
+#include "user_info.h"
 
 namespace Ui {
 class Start;
