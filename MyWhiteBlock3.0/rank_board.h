@@ -15,7 +15,6 @@ class rank_board : public QDialog
 
 public:
     explicit rank_board(QWidget *parent = nullptr);
-    void diff_show(int diff);
     ~rank_board();
 
 private:
@@ -24,6 +23,7 @@ private:
 public slots:
     void init(const QMap<QString, UserInfo>& usersInfo);
     void terminate();
+    void diff_show(int diff);
 };
 
 #endif // RANK_BOARD_H

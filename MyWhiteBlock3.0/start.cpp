@@ -33,7 +33,7 @@ Start::Start(QWidget *parent):
     this->ui->register_2->setShortcut(Qt::Key_Space);
     QObject::connect(this->ui->register_2, &QPushButton::clicked,this,&Start::registbut);
 
-    this->setAttribute(Qt::WA_DeleteOnClose);
+//    this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 Start::~Start(){
@@ -105,5 +105,6 @@ void Start::check(QString user, QString pswd)
 }
 
 void Start::send_rank_board_data(){
+    qDebug() << "send rkbd data called" << endl;
     emit(set_rank_board(usersInfo_map));
 }

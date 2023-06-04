@@ -34,3 +34,30 @@ UserInfo::UserInfo(QString& uname__, QString& pswd__): user_name(uname__), pswd(
 
 #pragma pack(pop)
 
+QMap<QString, UserInfo> read_user_info (const char* path__) {
+    QMap<QString, UserInfo> ret;
+    std::ifstream fin;
+    fin.open(path__, std::ios::in | std::ios::binary);
+    if (fin) {
+        UserInfoIO curr_info_io;
+        while (fin.read((char*)&curr_info_io, sizeof(UserInfoIO))) {
+            UserInfo curr_info(curr_info_io);
+            ret[curr_info.user_name] = curr_info;
+        }
+    }
+    fin.close();
+    return ret;
+}
+
+void dump_user_info (QMap<QString, UserInfo>& map_user__, const char* path__) {
+    std::ofstream fout;
+    fout.open(path__, std::ios::out | std::ios::binary);
+    if (fout) {
+        for (auto uit = map_user__.begin(); uit != map_user__.end(); ++uit) {
+            UserInfoIO curr_info_io(uit.value());
+            fout.write((char*)&curr_info_io, sizeof(UserInfoIO));
+        }
+    }
+    fout.close();
+}
+

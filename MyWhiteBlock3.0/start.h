@@ -9,7 +9,7 @@ namespace Ui {
 class Start;
 }
 
-QMap<QString,UserInfo> usersInfo_map; // 所有用户信息
+static QMap<QString,UserInfo> usersInfo_map; // 所有用户信息
 
 class Start : public QWidget
 {

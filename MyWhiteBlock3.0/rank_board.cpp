@@ -29,10 +29,11 @@ rank_board::rank_board(QWidget *parent) :
     ui->setupUi(this);
 
     QStringList diffList;
-    diffList<<"(简单)"<<"(普通)"<<"(困难)";
+    diffList<<"简单"<<"普通"<<"困难";
     ui->diffBox->addItems(diffList);
     ui->diffBox->setCurrentIndex(0);
-    connect(ui->diffBox,SIGNAL(currentIndexChanged(int)),this,SLOT(rank_board::diff_show(int))); // 不太对好像
+    connect(ui->diffBox,SIGNAL(currentIndexChanged(int)),this,SLOT(diff_show(int))); // 不太对好像
+//    connect(ui->diffBox, &QComboBox::currentIndexChanged, this, &rank_board::diff_show);
 
     connect(ui->back_btn, &QPushButton::clicked, this, rank_board::terminate);
 }
@@ -53,17 +54,18 @@ void rank_board::init(const QMap<QString, UserInfo>& usersInfo)
         }
     }
     for(int diff=0;diff<3;++diff){
-        std::sort(records[diff].begin(),records[diff].end(),std::greater<std::pair<int,QString>());
+        std::sort(records[diff].begin(),records[diff].end(),std::greater<std::pair<int,QString> >());
     }
 
     // select diff 的函数 显示默认为简单
+    ui->diffBox->setCurrentIndex(0);
     diff_show(0);
     // 选择窗口
 }
 
 void rank_board::diff_show(int diff)
 {
-    QVector<std::pair<int, QString>> record = records[diff];
+    QVector<std::pair<int, QString> > record = records[diff];
     int last_score = __INT_MAX__, placement = 0;
     for (int i = 0; i < ui->gridLayout->rowCount(); ++i) {
         QLabel *placement_label, *name_label, *score_label;

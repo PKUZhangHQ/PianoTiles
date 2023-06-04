@@ -6,13 +6,9 @@
 #include "game_widget.h"
 #include "gamehall.h"
 #include "rank_board.h"
+#include "user_info.h"
 #include "settings.h"
 
-int func(QApplication &a,Start *s){
-    int res = a.exec();
-    delete s;
-    return res;
-}
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -55,5 +51,7 @@ int main(int argc, char *argv[])
     QObject::connect(E, &End::updhis, S, &Start::updhis);
 
     S->init();
-    return a.exec();
+    int __res__ = a.exec();
+    delete S;
+    return __res__;
 }
