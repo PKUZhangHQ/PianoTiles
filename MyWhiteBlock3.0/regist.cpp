@@ -30,6 +30,7 @@ void Regist::clear()
 void Regist::_init(int x,int y)
 {
     this->show();
+    this->ui->lineEdit->setFocus();
     this->clear();
     this->move(x+130,y+160);
 }

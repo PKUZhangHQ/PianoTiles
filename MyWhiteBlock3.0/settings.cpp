@@ -57,4 +57,8 @@ void Settings::quit()
 void Settings::init()
 {
     this->show();//显示界面
+    this->ui->track4->setChecked(true);
+    this->track_num = 4;
+    this->ui->normal->setChecked(true);
+    this->difficulty = 1;
 }

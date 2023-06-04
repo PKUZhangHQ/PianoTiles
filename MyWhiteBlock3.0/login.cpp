@@ -30,6 +30,7 @@ void Login::clear()
 void Login::_init(int x,int y)
 {
     this->show();
+    this->ui->lineEdit->setFocus();
     this->clear();
     this->move(x+150,y+170);
 }

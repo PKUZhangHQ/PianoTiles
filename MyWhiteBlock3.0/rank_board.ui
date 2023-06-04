@@ -324,6 +324,21 @@
     </item>
    </layout>
   </widget>
+  <widget class="QComboBox" name="diffBox">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>40</y>
+     <width>201</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

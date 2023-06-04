@@ -11,6 +11,7 @@
 #include <QtDebug>
 #include <QPainter>
 #include <QLabel>
+#include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QDesktopWidget>
 
@@ -79,7 +80,8 @@ void game_widget::refresh()
 
 void game_widget::paintEvent(QPaintEvent *)
 {
-
+    int w = width();
+    if (track_num == 6) {w = w * 3 / 2; resize(w, height());}
     QPainter painter(this);
     //painter.fillRect(rect(),Qt::white);
     QPixmap pixmap = QPixmap(":/new/prefix1/backphoto.jpeg").scaled(this->size());
@@ -90,19 +92,64 @@ void game_widget::paintEvent(QPaintEvent *)
     painter.setPen(Qt::black);
     if(track_num==4)
     {
+        qDebug() << "4 track width = " << width();
         painter.drawLine(QPointF(width()/4,0),QPointF(width()/4,height()));
         painter.drawLine(QPointF(2*width()/4,0),QPointF(2*width()/4,height()));
         painter.drawLine(QPointF(3*width()/4,0),QPointF(3*width()/4,height()));
+
+        QString keyhint_str[4] = {"D", "F", "J", "K"};
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
+        layout->setSpacing(width()/track_num);
+        for (int i = 0; i < track_num; ++i) {
+            QLabel* keyhint = new QLabel(keyhint_str[i]);
+
+            QPalette palette = keyhint->palette();
+            palette.setColor(QPalette::WindowText, Qt::white);  // Change to the desired color
+            keyhint->setPalette(palette);
+
+            // Set font size
+            QFont font = keyhint->font();
+            font.setPointSize(16);  // Change to the desired font size
+            font.setBold(true);
+            keyhint->setFont(font);
+
+            layout->addWidget(keyhint);
+        }
+        setLayout(layout);
     }
 
     else if(track_num==6)
     {
+        qDebug() << "6 track width = " << width();
         painter.drawLine(QPointF(width()/6,0),QPointF(width()/6,height()));
         painter.drawLine(QPointF(2*width()/6,0),QPointF(2*width()/6,height()));
         painter.drawLine(QPointF(3*width()/6,0),QPointF(3*width()/6,height()));
         painter.drawLine(QPointF(4*width()/6,0),QPointF(4*width()/6,height()));
         painter.drawLine(QPointF(5*width()/6,0),QPointF(5*width()/6,height()));
+
+        QString keyhint_str[6] = {"S", "D", "F", "J", "K", "L"};
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
+        layout->setSpacing(width()/track_num);
+        for (int i = 0; i < track_num; ++i) {
+            QLabel* keyhint = new QLabel(keyhint_str[i]);
+
+            QPalette palette = keyhint->palette();
+            palette.setColor(QPalette::WindowText, Qt::white);  // Change to the desired color
+            keyhint->setPalette(palette);
+
+            // Set font size
+            QFont font = keyhint->font();
+            font.setPointSize(16);  // Change to the desired font size
+            font.setBold(true);
+            keyhint->setFont(font);
+
+            layout->addWidget(keyhint);
+        }
+        setLayout(layout);
     }
+
 
     if(failed)
     {

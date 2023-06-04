@@ -34,7 +34,8 @@ SOURCES += \
     game_widget.cpp \
     blockdata.cpp \
     gamehall.cpp \
-    settings.cpp
+    settings.cpp \
+    user_info.cpp
 
 HEADERS += \
     login.h \
