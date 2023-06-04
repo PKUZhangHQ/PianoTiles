@@ -15,7 +15,7 @@ class rank_board : public QDialog
 
 public:
     explicit rank_board(QWidget *parent = nullptr);
-    void diff_show(const QVector<std::pair<int,QString>>& records,int diff);
+    void diff_show(int diff);
     ~rank_board();
 
 private:
