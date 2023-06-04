@@ -39,6 +39,8 @@ Settings::Settings(QWidget *parent) :
         //qDebug() << "track_num is " << track_num;
     });
 
+    ui->ensure_btn->setShortcut(Qt::Key_Return);
+
     //点击确认关闭设置窗口
     connect(this->ui->ensure_btn, &QPushButton::clicked, this, &Settings::quit);
 
@@ -61,4 +63,5 @@ void Settings::init()
     this->track_num = 4;
     this->ui->normal->setChecked(true);
     this->difficulty = 1;
+    ui->ensure_btn->setFocus();
 }

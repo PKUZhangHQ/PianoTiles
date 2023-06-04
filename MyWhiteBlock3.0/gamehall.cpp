@@ -32,6 +32,7 @@ void Gamehall::init(QString user)
     this->setWindowTitle("游戏大厅");
     this->move((QApplication::desktop()->width()-this->width())/2,(QApplication::desktop()->height()-this->height())/2);
     this->ui->label->setText("当前用户："+user);
+    ui->start_btn->setFocus();
     this->show();
 }
 
