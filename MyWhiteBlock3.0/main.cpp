@@ -33,15 +33,19 @@ int main(int argc, char *argv[])
     QObject::connect(L, &Login::login, S, &Start::check); // 登陆界面登录
     QObject::connect(R, &Regist::regist, S, &Start::updusr);
     QObject::connect(S, &Start::login_success, L, &Login::success);
-    QObject::connect(S, &Start::login_success, G, &Gamehall::init);//进入游戏大厅
-    QObject::connect(St, &Settings::Set, w,&game_widget::Set); //点击确定，进入游戏
+    QObject::connect(S, &Start::login_success, G, &Gamehall::init);// 进入游戏大厅
+    QObject::connect(St, &Settings::Set, w,&game_widget::Set); // 点击确定，进入游戏
     QObject::connect(S, &Start::login_fail, L, &Login::fail);
-    QObject::connect(S, &Start::register_success, R, &Regist::success);//注册成功
-    QObject::connect(S, &Start::register_fail, R, &Regist::fail);//注册失败
+    QObject::connect(S, &Start::register_success, R, &Regist::success);// 注册成功
+    QObject::connect(S, &Start::register_fail, R, &Regist::fail);// 注册失败
     QObject::connect(S, &Start::userbest, E, &End::updbest);
-    QObject::connect(G, &Gamehall::logout, S, &Start::show);//点击结束
-    QObject::connect(G, &Gamehall::gotoSetting, St, &Settings::init);//进入设置
-    QObject::connect(G, &Gamehall::gotoRank, rkbd, &rank_board::init);
+    QObject::connect(G, &Gamehall::logout, S, &Start::show);// 点击结束
+    QObject::connect(G, &Gamehall::gotoSetting, St, &Settings::init);// 进入设置
+
+    QObject::connect(G, &Gamehall::gotoRank, S, &Start::send_rank_board_data); // 进入排行榜,调用start信息
+    QObject::connect(S, &Start::set_rank_board, rkbd, &rank_board::init); // 通过start信息设置排行榜
+//    QObject::connect(G, &Gamehall::gotoRank, rkbd, &rank_board::init); // 进入排行榜
+
     QObject::connect(G, &Gamehall::gotoStart, w, &game_widget::refresh);
     QObject::connect(G, &Gamehall::gotoStart, w, &game_widget::show);
     QObject::connect(w, &game_widget::gameover, E, &End::_init);

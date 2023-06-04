@@ -3,6 +3,9 @@
 #include<QFile>
 #include "rank_board.h"
 #include "ui_rank_board.h"
+#include "user_info.h"
+#include <QMap>
+#include <QVector>
 
 rank_board::rank_board(QWidget *parent) :
     QDialog(parent),
@@ -17,30 +20,26 @@ rank_board::~rank_board()
     delete ui;
 }
 
-void rank_board::init()
+void rank_board::init(const QMap<QString, UserInfo>& usersInfo)
 {
-    std::vector<std::pair<int, QString> > records;
-    QFile file("user_data");
-    if(file.open(QFile::ReadOnly))
-    {
-        QDataStream in(&file);
-        char *str;
-        int score = 0;
-        while(!in.atEnd())
-        {
-            in >> str;
-            QString user(str);
-            in >> str;
-            for (int i = 0; i < 3; ++i)
-            {
-                in >> score;
-                if (score > 0) records.push_back(std::make_pair(score, user));
+    QVector<std::pair<int, QString> > records[3];
+    for(auto user:usersInfo){
+        for(int diff=0;diff<3;++diff){
+            for(auto score:user.scores[diff]){
+                records[diff].push_back(std::make_pair(score,user.user_name));
             }
-
         }
-        file.close();
     }
-    std::sort(records.begin(), records.end(), std::greater<std::pair<int, QString> >());
+    for(int diff=0;diff<3;++diff){
+        std::sort(records[diff].begin(),records[diff].end(),std::greater<std::pair<int,QString>());
+    }
+    // select diff 的函数 显示默认为简单
+    diff_show(records[0],0);
+    // 选择窗口
+}
+
+void rank_board::diff_show(const QVector<std::pair<int,QString>>& record,int diff)
+{
     int last_score = __INT_MAX__, placement = 0;
     for (int i = 0; i < ui->gridLayout->rowCount(); ++i) {
         QLabel *placement_label, *name_label, *score_label;
