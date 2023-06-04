@@ -7,6 +7,7 @@
 #include "blockdata.h"
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QHBoxLayout>
 
 namespace Ui {
 class game_widget;
@@ -50,6 +51,8 @@ private:
     int difficulty;
     QMediaPlayer * musicplayer;
     QMediaPlaylist * myplaylist;
+    QHBoxLayout *layout;
+    void make_keyhint(int track_num__);
 };
 
 #endif // GAME_WIDGET_H
