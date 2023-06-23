@@ -8,6 +8,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QHBoxLayout>
+#include <QElapsedTimer>
 
 namespace Ui {
 class game_widget;
@@ -41,6 +42,7 @@ private slots:
 private:
     Ui::game_widget *ui;
     QTimer timer;
+    QElapsedTimer elapsedTimer;
     Block_Data bData;
     double speed;
     int Bwidth, Bheight;

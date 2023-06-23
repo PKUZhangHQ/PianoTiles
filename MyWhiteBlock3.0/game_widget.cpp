@@ -14,6 +14,8 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QDesktopWidget>
+#include <QTimer>
+#include <QTime>
 
 
 game_widget::game_widget(QWidget *parent) :
@@ -88,7 +90,11 @@ void game_widget::SetBlockData(int width, int height)
 void game_widget::StartGame()
 {
     timer.start();
-    ui->label->setText(QString::number(score));
+    elapsedTimer.start();
+    ui->label->setText(QString("得分：%1").arg(score));
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, Qt::white); // 设置字体颜色为白色
+    ui->label->setPalette(palette);
     musicplayer->play();
     this->setFocus();
     int RefreshFrequency = 10;
@@ -137,6 +143,13 @@ void game_widget::paintEvent(QPaintEvent *)
         painter.drawLine(QPointF(width()/4,0),QPointF(width()/4,height()));
         painter.drawLine(QPointF(2*width()/4,0),QPointF(2*width()/4,height()));
         painter.drawLine(QPointF(3*width()/4,0),QPointF(3*width()/4,height()));
+
+        QPen originalPen = painter.pen();
+        QPen pen(Qt::white);
+        pen.setWidth(2); // 设置线条宽度为2
+        painter.setPen(pen);
+        painter.drawLine(QPointF(0, height()/4*3), QPointF(width(), height()/4*3)); // perfect line
+        painter.setPen(originalPen);
     }
 
     else if(track_num==6)
@@ -147,6 +160,13 @@ void game_widget::paintEvent(QPaintEvent *)
         painter.drawLine(QPointF(3*width()/6,0),QPointF(3*width()/6,height()));
         painter.drawLine(QPointF(4*width()/6,0),QPointF(4*width()/6,height()));
         painter.drawLine(QPointF(5*width()/6,0),QPointF(5*width()/6,height()));
+
+        QPen originalPen = painter.pen();
+        QPen pen(Qt::white);
+        pen.setWidth(2); // 设置线条宽度为2
+        painter.setPen(pen);
+        painter.drawLine(QPointF(0, height()/6*5), QPointF(width(), height()/6*5)); // perfect line
+        painter.setPen(originalPen);
 
         QString keyhint_str[6] = {"S", "D", "F", "J", "K", "L"};
         QHBoxLayout *layout = new QHBoxLayout;
@@ -172,6 +192,24 @@ void game_widget::paintEvent(QPaintEvent *)
     }
 
 
+    // show time
+    qint64 elapsedTime = elapsedTimer.elapsed();
+    qint64 seconds = elapsedTime/1000;
+    qint64 minutes = seconds/60;
+    seconds = seconds%60;
+
+    QString timeText = QString("时间: %1:%2")
+                           .arg(minutes, 2, 10, QLatin1Char('0'))
+                           .arg(seconds, 2, 10, QLatin1Char('0'));
+
+    ui->timeLabel->setText(timeText);
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, Qt::white); // 设置字体颜色为白色
+
+    ui->timeLabel->setPalette(palette);
+
+
+
     if(failed)
     {
         //failure signal
@@ -179,7 +217,7 @@ void game_widget::paintEvent(QPaintEvent *)
         //pen.setWidth(5);
         //painter.setPen(pen);
         //painter.drawText(QRect(300,550,200,100),"Game Over");
-        int w = 400;
+        int w = 420;
         int h = 220;
         QFont f;
         f.setPixelSize(72);
@@ -194,7 +232,7 @@ void game_widget::paintEvent(QPaintEvent *)
         while(d)
         {
             switch (d->type) {
-            case BlockType::BONUS: painter.setBrush(Qt::darkYellow); break;
+            case BlockType::BONUS: painter.setBrush(Qt::darkBlue); break;
             case BlockType::DEATH: painter.setBrush(Qt::darkRed); break;
             case BlockType::NORMAL: painter.setBrush(Qt::black); break;
             }
@@ -230,8 +268,19 @@ void game_widget::keyPressEvent(QKeyEvent *event)
             case BlockType::NORMAL: ++score; break;
             case BlockType::BONUS: score += 3; break;
             }
+            // in perfect line, score double
+            if(TapKeyboard->y>height()/4*2&&TapKeyboard->y<height()/4*3){
+                switch (TapKeyboard->type) {
+                case BlockType::NORMAL: ++score; break;
+                case BlockType::BONUS: score += 3; break;
+                }
+            }
+            ui->label->setText(QString("得分：%1").arg(score));
+            QPalette palette;
+            palette.setColor(QPalette::WindowText, Qt::white); // 设置字体颜色为白色
 
-            ui->label->setText(QString::number(score));
+            ui->label->setPalette(palette);
+
 
             //easy
             if(difficulty==0)
@@ -280,6 +329,13 @@ void game_widget::keyPressEvent(QKeyEvent *event)
             switch (TapKeyboard->type) {
             case BlockType::NORMAL: ++score; break;
             case BlockType::BONUS: score += 3; break;
+            }
+            // in perfect line, score double
+            if(TapKeyboard->y>height()/6*4&&TapKeyboard->y<height()/6*5){
+                switch (TapKeyboard->type) {
+                case BlockType::NORMAL: ++score; break;
+                case BlockType::BONUS: score += 3; break;
+                }
             }
             ui->label->setText(QString::number(score));
             if(!(score%20)) ++speed;
@@ -365,7 +421,7 @@ void game_widget::UpdataData()
         BlockType::type btp;
         if (type_lot <= 75)
             btp = BlockType::NORMAL;
-        else if (type_lot <= 95)
+        else if (type_lot <= 100)
             btp = BlockType::BONUS;
         else
             btp = BlockType::DEATH;
