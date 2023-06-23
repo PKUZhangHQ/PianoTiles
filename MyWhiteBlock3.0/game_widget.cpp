@@ -193,8 +193,15 @@ void game_widget::paintEvent(QPaintEvent *)
         BlockData * d = bData.get_pos();
         while(d)
         {
+            switch (d->type) {
+            case BlockType::BONUS: painter.setBrush(Qt::darkYellow); break;
+            case BlockType::DEATH: painter.setBrush(Qt::darkRed); break;
+            case BlockType::NORMAL: painter.setBrush(Qt::black); break;
+            }
+
             painter.drawRect(d->x,d->y,d->width,d->height);
             d = d->next;
+            painter.setBrush(Qt::black);
         }
     }
 }
@@ -205,7 +212,7 @@ void game_widget::keyPressEvent(QKeyEvent *event)
 
     this->grabKeyboard();
 
-    bool TapKeyboard = false;
+    BlockData* TapKeyboard = nullptr;
     if(track_num == 4)
     {
         switch(event->key())
@@ -217,9 +224,13 @@ void game_widget::keyPressEvent(QKeyEvent *event)
         default:break;
         }
 
-        if(TapKeyboard)
+        if(TapKeyboard && TapKeyboard->type != BlockType::DEATH)
         {
-            ++score;
+            switch (TapKeyboard->type) {
+            case BlockType::NORMAL: ++score; break;
+            case BlockType::BONUS: score += 3; break;
+            }
+
             ui->label->setText(QString::number(score));
 
             //easy
@@ -264,9 +275,12 @@ void game_widget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_L: TapKeyboard = bData.remove(6*(Bwidth-1)); break;
         default:break;
         }
-        if(TapKeyboard)
+        if(TapKeyboard && TapKeyboard->type != BlockType::DEATH)
         {
-            ++score;
+            switch (TapKeyboard->type) {
+            case BlockType::NORMAL: ++score; break;
+            case BlockType::BONUS: score += 3; break;
+            }
             ui->label->setText(QString::number(score));
             if(!(score%20)) ++speed;
             if(score%66 == 0) --speed;
@@ -280,14 +294,19 @@ void game_widget::keyPressEvent(QKeyEvent *event)
             timer.stop();
         }
     }
+    delete TapKeyboard;
 }
 
 void game_widget::mousePressEvent(QMouseEvent *event)
 {
     QPoint point = event->pos();
-    if(bData.remove(point.x(),point.y()))
+    BlockData* rm_block = bData.remove(point.x(),point.y());
+    if(rm_block && rm_block->type != BlockType::DEATH)
     {
-        ++score;
+        switch (rm_block->type) {
+        case BlockType::NORMAL: ++score; break;
+        case BlockType::BONUS: score += 3; break;
+        }
         //刷新速度
         ui->label->setText(QString::number(score));
 
@@ -311,7 +330,7 @@ void game_widget::mousePressEvent(QMouseEvent *event)
         }
     }
 
-    else if(!bData.remove(point.x(),point.y()))
+    else
     {
         //failure
         failed = true;
@@ -327,10 +346,12 @@ void game_widget::mousePressEvent(QMouseEvent *event)
         //        mouse_painter.setFont(f);
         //        mouse_painter.drawText((width()-w)/2,(height()-h)/2,w,h,Qt::AlignCenter,"Game Over!");
     }
+    delete rm_block;
 }
 
 void game_widget::UpdataData()
 {
+    // 生成块
     static int _speed = Bheight;
 
     if(_speed >= Bheight)
@@ -338,7 +359,18 @@ void game_widget::UpdataData()
 
         BlockData *d = new BlockData;
         int x = qrand() % track_num;
-        bData.init(&d,x*Bwidth,-Bheight,Bwidth,Bheight);
+        // decide the block type randomly
+        int type_lot = qrand() % 100;
+
+        BlockType::type btp;
+        if (type_lot <= 75)
+            btp = BlockType::NORMAL;
+        else if (type_lot <= 95)
+            btp = BlockType::BONUS;
+        else
+            btp = BlockType::DEATH;
+
+        bData.init(&d,x*Bwidth,-Bheight,Bwidth,Bheight, btp);
         bData.insert(d);
         _speed = 0;
 

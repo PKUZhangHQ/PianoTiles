@@ -29,7 +29,6 @@
     <font>
      <family>Agency FB</family>
      <pointsize>20</pointsize>
-     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -40,6 +39,9 @@ font: 20pt &quot;Agency FB&quot;;</string>
    </property>
    <property name="text">
     <string>100</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

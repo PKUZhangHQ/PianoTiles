@@ -11,7 +11,7 @@ Block_Data::~Block_Data()
     clear();
 }
 
-void Block_Data::init(BlockData **d, int x, int y, int width, int height)
+void Block_Data::init(BlockData **d, int x, int y, int width, int height, BlockType::type type__)
 {
     BlockData *n = *d;
     n->x = x;
@@ -19,6 +19,7 @@ void Block_Data::init(BlockData **d, int x, int y, int width, int height)
     n->width = width;
     n->height = height;
     n->next = NULL;
+    n->type = type__;
 }
 
 void Block_Data::insert(BlockData *d)
@@ -34,14 +35,16 @@ void Block_Data::insert(BlockData *d)
     tail = tail->next;
 }
 
-bool Block_Data::remove(int x,int y)
+BlockData* Block_Data::remove(int x,int y)
 {
+    // when there is no block
     if(!head)
-        return false;
+        return nullptr;
 
+    // when the mouse miss the target
     if(x < head->x || head->x + head->width < x
             || y < head->y || head->y + head->height < y)
-        return false;
+        return nullptr;
 
     BlockData *n = head;
     if(n == tail)
@@ -50,17 +53,17 @@ bool Block_Data::remove(int x,int y)
     else
         head = head->next;
 
-    delete n;
-    return true;
+    // delete n;
+    return n;
 }
 
-bool Block_Data::remove(int x)
+BlockData* Block_Data::remove(int x)
 {
     if(!head)
-        return false;
+        return nullptr;
 
     if(x < head->x || head->x + head->width < x)
-        return false;
+        return nullptr;
 
     BlockData *n = head;
 
@@ -70,8 +73,8 @@ bool Block_Data::remove(int x)
     else
         head = head->next;
 
-    delete n;
-    return true;
+    // delete n;
+    return n;
 }
 
 void Block_Data::updata(int speed)

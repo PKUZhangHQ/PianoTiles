@@ -4,24 +4,31 @@
 #include<QDebug>
 #include<stdio.h>
 
+namespace BlockType {
+enum type{NORMAL, BONUS, DEATH};
+}
+
+// node
 struct BlockData
 {
-    int x, y;
-    int width, height;
+    int x, y; // coor of block
+    int width, height; // shape of block
+    BlockType::type type;
     BlockData * next;
 };
 
+// linked list
 class Block_Data
 {
 public:
     Block_Data();
     ~Block_Data();
-    void init(BlockData **d, int x=0,int y=0, int width=0,int height=0);
+    void init(BlockData **d, int x=0,int y=0, int width=0,int height=0, BlockType::type type__ = BlockType::NORMAL);
     void insert(BlockData *d);
     void updata(int speed);
 
-    bool remove(int x);
-    bool remove(int x,int y);
+    BlockData* remove(int x);
+    BlockData* remove(int x,int y);
     bool judge(int y);
     void clear();
 
